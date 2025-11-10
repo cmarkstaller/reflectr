@@ -16,7 +16,7 @@ import {
   Cell,
   Legend,
 } from "recharts";
-import type { Entry, Mood } from "../types";
+import type { Mood } from "../types";
 import { getEntries } from "../storage";
 
 const MOOD_COLORS: Record<Mood, string> = {
@@ -207,7 +207,7 @@ export function MetricsPage({ onBack }: MetricsPageProps) {
       return (
         <div className="chart-tooltip">
           {data?.mood && (
-            <p style={{ color: MOOD_COLORS[data.mood], fontWeight: 600 }}>
+            <p style={{ color: MOOD_COLORS[data.mood as Mood], fontWeight: 600 }}>
               {data.mood}
             </p>
           )}
@@ -454,7 +454,7 @@ export function MetricsPage({ onBack }: MetricsPageProps) {
                 cx="50%"
                 cy="50%"
                 labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 outerRadius={100}
                 fill="#8884d8"
                 dataKey="value"
