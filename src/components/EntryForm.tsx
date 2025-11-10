@@ -196,7 +196,7 @@ export function EntryForm({ onSave, onClose }: EntryFormProps) {
             checked={flow}
             onChange={(e) => setFlow(e.target.checked)}
           />
-          In the flow
+          <span>flow</span> <span style={{ color: "var(--text-light)" }}>(did you enter flow state)</span>
         </label>
       </div>
 

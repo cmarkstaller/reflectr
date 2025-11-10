@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { getActivities, addActivity } from "../storage";
 
 interface ActivitySelectProps {
@@ -11,6 +11,7 @@ export function ActivitySelect({ value, onChange }: ActivitySelectProps) {
   const [showAddInput, setShowAddInput] = useState(false);
   const [newActivity, setNewActivity] = useState("");
   const [selectValue, setSelectValue] = useState<string>(value || "");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setActivities(getActivities());
@@ -19,6 +20,17 @@ export function ActivitySelect({ value, onChange }: ActivitySelectProps) {
   useEffect(() => {
     setSelectValue(value || "");
   }, [value]);
+
+  useEffect(() => {
+    // Focus the input after it appears, with a small delay for iOS Safari
+    if (showAddInput && inputRef.current) {
+      // Use setTimeout to ensure focus happens after select dropdown closes on mobile
+      const timer = setTimeout(() => {
+        inputRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showAddInput]);
 
   const handleAddActivity = () => {
     const trimmed = newActivity.trim();
@@ -63,12 +75,12 @@ export function ActivitySelect({ value, onChange }: ActivitySelectProps) {
       {showAddInput && (
         <div className="add-activity-input">
           <input
+            ref={inputRef}
             type="text"
             value={newActivity}
             onChange={(e) => setNewActivity(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Activity name"
-            autoFocus
           />
           <button type="button" onClick={handleAddActivity}>
             Add
