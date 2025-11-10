@@ -67,7 +67,7 @@ export function ActivitySelect({ value, onChange }: ActivitySelectProps) {
             value={newActivity}
             onChange={(e) => setNewActivity(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="What are you up to?"
+            placeholder="Activity name"
             autoFocus
           />
           <button type="button" onClick={handleAddActivity}>

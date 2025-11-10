@@ -127,15 +127,28 @@ export function EntryForm({ onSave, onClose }: EntryFormProps) {
         <label htmlFor="energy">
           Energy: <span className="value-badge">{energy.toFixed(2)}</span>
         </label>
-        <input
-          id="energy"
-          type="range"
-          min="-1"
-          max="1"
-          step="0.01"
-          value={energy}
-          onChange={(e) => setEnergy(parseFloat(e.target.value))}
-        />
+        <div className="slider-wrapper">
+          <div className="slider-tail energy-tail">
+            <div
+              className="slider-tail-bar"
+              style={{
+                width: `${Math.abs(energy) * 50}%`,
+                marginLeft: energy < 0 ? `${50 - Math.abs(energy) * 50}%` : "50%",
+                backgroundColor: energy < 0 ? "#f87171" : "#10b981",
+              }}
+            />
+          </div>
+          <input
+            id="energy"
+            type="range"
+            min="-1"
+            max="1"
+            step="0.01"
+            value={energy}
+            onChange={(e) => setEnergy(parseFloat(e.target.value))}
+            className="slider-input"
+          />
+        </div>
         <div className="slider-labels">
           <span>Negative</span>
           <span>0</span>
@@ -147,15 +160,27 @@ export function EntryForm({ onSave, onClose }: EntryFormProps) {
         <label htmlFor="engagement">
           Engagement: <span className="value-badge">{engagement.toFixed(2)}</span>
         </label>
-        <input
-          id="engagement"
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={engagement}
-          onChange={(e) => setEngagement(parseFloat(e.target.value))}
-        />
+        <div className="slider-wrapper">
+          <div className="slider-tail engagement-tail">
+            <div
+              className="slider-tail-bar"
+              style={{
+                width: `${engagement * 100}%`,
+                backgroundColor: "#6366f1",
+              }}
+            />
+          </div>
+          <input
+            id="engagement"
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={engagement}
+            onChange={(e) => setEngagement(parseFloat(e.target.value))}
+            className="slider-input"
+          />
+        </div>
         <div className="slider-labels">
           <span>Low</span>
           <span>0.5</span>
