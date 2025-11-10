@@ -88,12 +88,12 @@ export function addActivity(activity: string): string {
   return trimmed;
 }
 
-export function addEntry(partial: Omit<Entry, "id" | "user_id" | "timestamp">): Entry {
+export function addEntry(partial: Omit<Entry, "id" | "user_id"> & { timestamp?: string }): Entry {
   const entry: Entry = {
     ...partial,
     id: generateUUID(),
     user_id: "local_user",
-    timestamp: new Date().toISOString(),
+    timestamp: partial.timestamp || new Date().toISOString(),
   };
 
   const entries = getEntries();

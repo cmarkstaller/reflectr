@@ -52,7 +52,7 @@ export function ActivitySelect({ value, onChange }: ActivitySelectProps) {
   return (
     <div className="activity-select">
       <select value={selectValue} onChange={handleSelectChange} required>
-        <option value="">Select activity...</option>
+        <option value="">Choose an activity</option>
         {activities.map((activity) => (
           <option key={activity} value={activity}>
             {activity}
@@ -67,7 +67,7 @@ export function ActivitySelect({ value, onChange }: ActivitySelectProps) {
             value={newActivity}
             onChange={(e) => setNewActivity(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Enter activity name"
+            placeholder="What are you up to?"
             autoFocus
           />
           <button type="button" onClick={handleAddActivity}>

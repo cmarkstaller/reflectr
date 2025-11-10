@@ -5,17 +5,45 @@ import { ActivitySelect } from "./ActivitySelect";
 
 interface EntryFormProps {
   onSave: () => void;
+  onClose?: () => void;
 }
 
 const MOODS: Mood[] = ["Happy", "Calm", "Stressed", "Tired", "Excited", "Neutral"];
 
-export function EntryForm({ onSave }: EntryFormProps) {
+// Mood color mapping (matching EntryList)
+const MOOD_COLORS: Record<Mood, string> = {
+  Happy: "#fbbf24", // yellow
+  Calm: "#60a5fa", // blue
+  Stressed: "#f87171", // red
+  Tired: "#a78bfa", // purple
+  Excited: "#fb923c", // orange
+  Neutral: "#94a3b8", // gray
+};
+
+// Helper to format date for datetime-local input (YYYY-MM-DDTHH:mm)
+function formatDateTimeLocal(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+// Helper to convert datetime-local string to ISO string
+function datetimeLocalToISO(datetimeLocal: string): string {
+  return new Date(datetimeLocal).toISOString();
+}
+
+export function EntryForm({ onSave, onClose }: EntryFormProps) {
+  const now = new Date();
   const [mood, setMood] = useState<Mood>("Neutral");
   const [energy, setEnergy] = useState<number>(0);
   const [engagement, setEngagement] = useState<number>(0.5);
   const [flow, setFlow] = useState<boolean>(false);
   const [activity, setActivity] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
+  const [timestamp, setTimestamp] = useState<string>(formatDateTimeLocal(now));
   const [isValid, setIsValid] = useState<boolean>(false);
 
   useEffect(() => {
@@ -27,6 +55,8 @@ export function EntryForm({ onSave }: EntryFormProps) {
     e.preventDefault();
     if (!isValid) return;
 
+    const timestampISO = datetimeLocalToISO(timestamp);
+
     addEntry({
       mood,
       energy,
@@ -34,37 +64,63 @@ export function EntryForm({ onSave }: EntryFormProps) {
       flow,
       activity: activity.trim(),
       notes: notes.trim() || undefined,
+      timestamp: timestampISO,
     });
 
     // Reset form
+    const newNow = new Date();
     setMood("Neutral");
     setEnergy(0);
     setEngagement(0.5);
     setFlow(false);
     setActivity("");
     setNotes("");
+    setTimestamp(formatDateTimeLocal(newNow));
 
     onSave();
   };
 
   return (
     <form onSubmit={handleSubmit} className="entry-form">
-      <h2>New Entry</h2>
+      <h2>How are you feeling?</h2>
 
       <div className="form-group">
-        <label htmlFor="mood">Mood *</label>
-        <select
-          id="mood"
-          value={mood}
-          onChange={(e) => setMood(e.target.value as Mood)}
+        <label htmlFor="activity">What are you doing?</label>
+        <ActivitySelect value={activity} onChange={setActivity} />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="timestamp">When?</label>
+        <input
+          id="timestamp"
+          type="datetime-local"
+          value={timestamp}
+          onChange={(e) => setTimestamp(e.target.value)}
           required
-        >
-          {MOODS.map((m) => (
-            <option key={m} value={m}>
-              {m}
-            </option>
-          ))}
-        </select>
+        />
+      </div>
+
+      <div className="form-group">
+        <label htmlFor="mood">Mood</label>
+        <div className="mood-select-wrapper">
+          <select
+            id="mood"
+            value={mood}
+            onChange={(e) => setMood(e.target.value as Mood)}
+            required
+            className="mood-select"
+            style={{
+              borderLeftColor: MOOD_COLORS[mood],
+            }}
+          >
+            {MOODS.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+          <div className="mood-color-indicator" style={{ backgroundColor: MOOD_COLORS[mood] }} />
+        </div>
       </div>
 
       <div className="form-group">
@@ -81,9 +137,9 @@ export function EntryForm({ onSave }: EntryFormProps) {
           onChange={(e) => setEnergy(parseFloat(e.target.value))}
         />
         <div className="slider-labels">
-          <span>-1</span>
+          <span>Negative</span>
           <span>0</span>
-          <span>1</span>
+          <span>Positive</span>
         </div>
       </div>
 
@@ -101,9 +157,9 @@ export function EntryForm({ onSave }: EntryFormProps) {
           onChange={(e) => setEngagement(parseFloat(e.target.value))}
         />
         <div className="slider-labels">
-          <span>0</span>
+          <span>Low</span>
           <span>0.5</span>
-          <span>1</span>
+          <span>High</span>
         </div>
       </div>
 
@@ -115,29 +171,31 @@ export function EntryForm({ onSave }: EntryFormProps) {
             checked={flow}
             onChange={(e) => setFlow(e.target.checked)}
           />
-          Flow
+          In the flow
         </label>
       </div>
 
       <div className="form-group">
-        <label htmlFor="activity">Activity *</label>
-        <ActivitySelect value={activity} onChange={setActivity} />
-      </div>
-
-      <div className="form-group">
-        <label htmlFor="notes">Notes (optional)</label>
+        <label htmlFor="notes">Notes</label>
         <textarea
           id="notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows={4}
-          placeholder="Add any additional notes..."
+          placeholder="Anything else on your mind?"
         />
       </div>
 
-      <button type="submit" disabled={!isValid} className="save-button">
-        Save Entry
-      </button>
+      <div className="form-actions">
+        {onClose && (
+          <button type="button" onClick={onClose} className="cancel-button">
+            Cancel
+          </button>
+        )}
+        <button type="submit" disabled={!isValid} className="save-button">
+          Save
+        </button>
+      </div>
     </form>
   );
 }
