@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { Mood } from "../types";
-import { addEntry, getActivities } from "../storage";
+import { addEntry } from "../storage";
 import { ActivitySelect } from "./ActivitySelect";
 
 interface EntryFormProps {
@@ -19,9 +19,9 @@ export function EntryForm({ onSave }: EntryFormProps) {
   const [isValid, setIsValid] = useState<boolean>(false);
 
   useEffect(() => {
-    // Check if form is valid
-    setIsValid(mood !== "" && activity.trim() !== "");
-  }, [mood, activity]);
+    // Check if form is valid (mood always has a value, so just check activity)
+    setIsValid(activity.trim() !== "");
+  }, [activity]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
