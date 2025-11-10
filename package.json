@@ -2,15 +2,28 @@
   "name": "reflectr",
   "version": "1.0.0",
   "description": "Reflectr - A Progressive Web App",
+  "type": "module",
   "scripts": {
-    "dev": "npx serve .",
-    "build": "echo 'No build step required for static site'"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "keywords": [
     "pwa",
     "progressive-web-app"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8"
+  }
 }
 
