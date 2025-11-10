@@ -1,0 +1,16 @@
+{
+  "name": "reflectr",
+  "version": "1.0.0",
+  "description": "Reflectr - A Progressive Web App",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'No build step required for static site'"
+  },
+  "keywords": [
+    "pwa",
+    "progressive-web-app"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
